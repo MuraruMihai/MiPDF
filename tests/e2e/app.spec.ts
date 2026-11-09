@@ -86,6 +86,7 @@ test('edits existing text, adds text, highlight and a drawn signature', async ({
   await page.mouse.up();
   await shot(page, '3-signature');
   await page.getByRole('button', { name: 'Plasează pe document' }).click();
+  await expect(page.locator('.overlay.t-place').first()).toBeAttached();
   await page.mouse.move(box.x + 420, box.y + 560);
   await page.mouse.click(box.x + 420, box.y + 560);
   await expect(page.locator('.obj.image')).toHaveCount(1);
@@ -98,13 +99,12 @@ test('edits existing text, adds text, highlight and a drawn signature', async ({
   await expect(page.locator('.obj.image')).toHaveCount(1);
 
   const out = await download(page, () => page.getByRole('button', { name: 'Salvează', exact: true }).click());
-  expect(out.name).toBe('contract (editat).pdf');
+  expect(out.name).toBe('contract-editat.pdf');
   const pdf = await PDFDocument.load(out.bytes);
   expect(pdf.getPageCount()).toBe(3);
   expect(out.bytes.length).toBeGreaterThan(readFileSync(fixture('contract.pdf')).length);
 
   // Re-open the saved file: the edits are now part of the PDF itself
-  page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Înapoi' }).click();
   const chooser = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Alege fișier' }).click();
@@ -123,6 +123,12 @@ test('rotates and deletes pages from the sidebar', async ({ page }) => {
   const t3 = page.locator('.thumb').nth(2);
   await t3.hover();
   await t3.getByRole('button', { name: 'Șterge pagina' }).click();
+  await expect(page.locator('.thumb')).toHaveCount(2);
+
+  // Leaving with unsaved changes asks first
+  await page.getByRole('button', { name: 'Înapoi' }).click();
+  await expect(page.getByRole('alertdialog', { name: 'Modificări nesalvate' })).toBeVisible();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Anulează' }).click();
   await expect(page.locator('.thumb')).toHaveCount(2);
   const out = await download(page, () => page.getByRole('button', { name: 'Salvează', exact: true }).click());
   const pdf = await PDFDocument.load(out.bytes);

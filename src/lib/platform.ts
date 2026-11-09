@@ -48,6 +48,20 @@ export async function saveFile(name: string, bytes: Uint8Array): Promise<boolean
     return true;
   }
   const blob = new Blob([bytes as BlobPart], { type: MIME[ext] || 'application/octet-stream' });
+  // Hosted inside a claude.ai Artifact: downloads go through the viewer's save prompt.
+  const host = (window as unknown as { claude?: { use?: (n: string) => Promise<unknown> } }).claude;
+  if (host?.use) {
+    const dl = (await host.use('downloads').catch(() => null)) as { save: (r: { filename: string; data: Blob }) => Promise<unknown> } | null;
+    if (dl) {
+      try {
+        await dl.save({ filename: name, data: blob });
+        return true;
+      } catch (e) {
+        if ((e as { code?: string })?.code === 'declined') return false;
+        throw new Error('Descărcarea nu este disponibilă aici.');
+      }
+    }
+  }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

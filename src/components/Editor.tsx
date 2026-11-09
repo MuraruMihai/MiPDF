@@ -242,7 +242,7 @@ export default function Editor({ request, onClose }: { request: OpenRequest; onC
       setBusy({ title: 'Salvez PDF-ul' });
       const bytes = await buildPdf();
       setBusy(null);
-      const out = /\.pdf$/i.test(name) ? (dirty && !request.converted ? baseName(name) + ' (editat).pdf' : name) : baseName(name) + '.pdf';
+      const out = /\.pdf$/i.test(name) ? (dirty && !request.converted ? baseName(name) + '-editat.pdf' : name) : baseName(name) + '.pdf';
       if (await saveFile(out, bytes)) { setDirty(false); toast(`Salvat: ${out}`); }
     } catch (e) {
       setBusy(null);
@@ -273,10 +273,8 @@ export default function Editor({ request, onClose }: { request: OpenRequest; onC
     const w = Math.min(240, im.naturalWidth * 0.75);
     setPending({ src, w, h: (w * im.naturalHeight) / im.naturalWidth });
   };
-  const close = () => {
-    if (dirty && !confirm('Ai modificări nesalvate. Închizi documentul?')) return;
-    onClose();
-  };
+  const [askClose, setAskClose] = useState(false);
+  const close = () => (dirty ? setAskClose(true) : onClose());
 
   // ---------- keyboard ----------
   const keys = useRef<(e: KeyboardEvent) => void>(() => {});
@@ -448,6 +446,20 @@ export default function Editor({ request, onClose }: { request: OpenRequest; onC
               )}
             </>
           )}
+        </div>
+      )}
+
+      {askClose && (
+        <div className="scrim" onPointerDown={(e) => { if (e.target === e.currentTarget) setAskClose(false); }}>
+          <div className="sheet" role="alertdialog" aria-label="Modificări nesalvate" style={{ width: 'min(400px, 100%)' }}>
+            <h3>Închizi fără să salvezi?</h3>
+            <p style={{ margin: 0, color: 'var(--text-2)', lineHeight: 1.5 }}>Modificările făcute în „{name}” se pierd dacă nu le salvezi.</p>
+            <div className="foot">
+              <button className="btn secondary" onClick={() => setAskClose(false)}>Anulează</button>
+              <button className="btn danger" onClick={onClose}>Închide fără salvare</button>
+              <button className="btn primary" onClick={async () => { setAskClose(false); await savePdf(); }}>Salvează</button>
+            </div>
+          </div>
         </div>
       )}
 
