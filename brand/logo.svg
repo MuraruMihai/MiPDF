@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>MiPDF</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="0.55" stop-color="#5B6CF9"/>
+      <stop offset="1" stop-color="#22C5D3"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.25" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#EEF0FF"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C9CCF8"/>
+      <stop offset="1" stop-color="#F4F5FF"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FF8A4C"/>
+      <stop offset="0.5" stop-color="#FF4F8B"/>
+      <stop offset="1" stop-color="#C04CF7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#1B1650" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- squircle -->
+  <path d="M512 24c300 0 400 0 444 44s44 144 44 444 0 400-44 444-144 44-444 44-400 0-444-44S24 812 24 512s0-400 44-444S212 24 512 24z" fill="url(#bg)"/>
+  <path d="M512 24c300 0 400 0 444 44s44 144 44 444 0 400-44 444-144 44-444 44-400 0-444-44S24 812 24 512s0-400 44-444S212 24 512 24z" fill="url(#glow)"/>
+  <!-- document -->
+  <g transform="rotate(-7 512 520)" filter="url(#shadow)">
+    <path d="M300 196h300l144 144v444a44 44 0 0 1-44 44H300a44 44 0 0 1-44-44V240a44 44 0 0 1 44-44z" fill="url(#sheet)"/>
+    <path d="M600 196l144 144H636a36 36 0 0 1-36-36z" fill="url(#fold)"/>
+    <rect x="320" y="300" width="200" height="30" rx="15" fill="#5B6CF9" opacity="0.9"/>
+    <rect x="320" y="372" width="352" height="22" rx="11" fill="#C7CBEF"/>
+    <rect x="320" y="424" width="300" height="22" rx="11" fill="#C7CBEF"/>
+    <rect x="320" y="476" width="330" height="22" rx="11" fill="#C7CBEF"/>
+  </g>
+  <!-- signature swoosh -->
+  <path d="M236 712c52-74 104-120 140-104 40 18-30 120 6 128 40 9 96-140 140-126 38 12-12 104 24 110 42 7 92-78 150-96 40-12 66 6 92 26" fill="none" stroke="url(#ink)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="808" cy="656" r="22" fill="#C04CF7"/>
+</svg>
